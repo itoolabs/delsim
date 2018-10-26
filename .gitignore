@@ -1,0 +1,6 @@
+.idea/
+delsim
+delsim-client
+*.wav
+*.rec
+*~
