@@ -129,12 +129,12 @@ func (c *Client) recv(wg *sync.WaitGroup) {
 Loop:
 	for {
 		buf := alloc()
-		n, _, flags, addr, err := c.conn.ReadMsgUDP(buf, oob)
+		n, _, _, addr, err := c.conn.ReadMsgUDP(buf, oob)
 		if err != nil {
 			fmt.Printf("error receiving packet: %q\n", err)
 			break Loop
 		} else {
-			if n < packetSize || flags&syscall.MSG_TRUNC != 0 {
+			if n < packetSize {
 				fmt.Printf("invalid packet received, discarding\n")
 			} else if addr.Port != c.addr.Port || !addr.IP.Equal(c.addr.IP) || addr.Zone != c.addr.Zone {
 				fmt.Printf("packet from unexpected address (%s), discarding\n", addr.String())

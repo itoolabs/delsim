@@ -5,7 +5,6 @@ import (
 	"github.com/zaf/g711"
 	"net"
 	"sync"
-	"syscall"
 	"time"
 	"unsafe"
 )
@@ -170,13 +169,13 @@ func (ep *endpoint) receive(ch chan packet) {
 	debugf("%s endpoint receiver started", ep.name)
 	for {
 		buf := alloc()
-		n, _, flags, addr, err := ep.conn.ReadMsgUDP(buf, oob)
+		n, _, _, addr, err := ep.conn.ReadMsgUDP(buf, oob)
 		if err != nil {
 			logf("%s error receiving packet: %q", ep.name, err)
 			break
 		} else {
 			ts := time.Now()
-			if n < packetSize || flags&syscall.MSG_TRUNC != 0 {
+			if n < packetSize {
 				logf("%s packet from %s discarded due to unexpected length", ep.name, addr.String())
 			} else if addr.Port <= 1024 || addr.Port > 65533 {
 				logf("%s packet from %s discarded due to unexpected port (must be 1024 < port < 65534)", ep.name, addr.String())
