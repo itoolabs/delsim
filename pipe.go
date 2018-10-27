@@ -97,8 +97,8 @@ func (q *queue) enqueue(pkt []byte) {
 	if q.off == 0 {
 		q.pkts[q.cur] = pkt
 	} else {
-		copy(q.pkts[q.cur][q.off:], pkt[:q.off])
-		copy(pkt, pkt[q.off:])
+		copy(q.pkts[q.cur][q.off:], pkt[:len(pkt) - q.off])
+		copy(pkt, pkt[len(pkt) - q.off:])
 		q.pkts[nxt] = pkt
 	}
 	q.cur = nxt
@@ -169,16 +169,14 @@ func (ep *endpoint) receive(ch chan packet) {
 	debugf("%s endpoint receiver started", ep.name)
 	for {
 		buf := alloc()
-		n, _, _, addr, err := ep.conn.ReadMsgUDP(buf, oob)
+		n, _, flags, addr, err := ep.conn.ReadMsgUDP(buf, oob)
 		if err != nil {
 			logf("%s error receiving packet: %q", ep.name, err)
 			break
 		} else {
 			ts := time.Now()
-			if n < packetSize {
+			if n != packetSize || flags&MSG_TRUNC != 0 {
 				logf("%s packet from %s discarded due to unexpected length", ep.name, addr.String())
-			} else if addr.Port <= 1024 || addr.Port > 65533 {
-				logf("%s packet from %s discarded due to unexpected port (must be 1024 < port < 65534)", ep.name, addr.String())
 			} else {
 				ch <- packet{
 					src: addr,

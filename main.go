@@ -44,7 +44,7 @@ udp port :9001 and pass it to client, sending stream to port :9002, and vice ver
 			alice := newEndpoint("alice", aliceConn)
 			bob := newEndpoint("bob", bobConn)
 			rand.Seed(time.Now().UnixNano())
-			delay := time.Duration(rand.Int63n(48) + 2) * packetLength
+			delay := time.Duration(rand.Int63n(600) + 20) * time.Millisecond
 			process(delay, alice, bob)
 		},
 	}

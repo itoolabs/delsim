@@ -1,6 +1,7 @@
 .idea/
 delsim
 delsim-client
+*.exe
 *.wav
 *.rec
 *~

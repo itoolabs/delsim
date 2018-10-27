@@ -13,3 +13,5 @@ github.com/spf13/pflag v1.0.3 h1:zPAT6CGy6wXeQ7NtTnaTerfKOsV6V6F8agHXFiazDkg=
 github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnInEg4=
 github.com/zaf/g711 v0.0.0-20170102005359-c92d33efff1b h1:9CQcRfjzYTQdYRVI6PnaW5J4Gv7Tu4rONiaVBgfyGfg=
 github.com/zaf/g711 v0.0.0-20170102005359-c92d33efff1b/go.mod h1:T2h1zV50R/q0CVYnsQOQ6L7P4a2ZxH47ixWcMXFGyx8=
+golang.org/x/sys v0.0.0-20181026144532-2772b66316d2 h1:W7CqTdBJ1CmxLKe7LptKDnBYV6PHrVLiGnoyBjaG/JQ=
+golang.org/x/sys v0.0.0-20181026144532-2772b66316d2/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
 	"net"
 	"os"
@@ -55,15 +56,15 @@ type Sink interface {
 }
 
 type debugSource struct {
-	val uint8
+	val int
 }
 
 func (d *debugSource) Get() []byte {
 	pkt := alloc()
-	for i := 0; i < len(pkt); i++ {
-		pkt[i] = byte(d.val)
-		d.val++
-	}
+	pkt[0] = 0xff
+	pkt[len(pkt) - 1] = 0xff
+	binary.BigEndian.PutUint32(pkt[1:], uint32(d.val))
+	d.val++
 	return pkt
 }
 
@@ -129,12 +130,12 @@ func (c *Client) recv(wg *sync.WaitGroup) {
 Loop:
 	for {
 		buf := alloc()
-		n, _, _, addr, err := c.conn.ReadMsgUDP(buf, oob)
+		n, _, flags, addr, err := c.conn.ReadMsgUDP(buf, oob)
 		if err != nil {
 			fmt.Printf("error receiving packet: %q\n", err)
 			break Loop
 		} else {
-			if n < packetSize {
+			if n != packetSize || flags&MSG_TRUNC != 0 {
 				fmt.Printf("invalid packet received, discarding\n")
 			} else if addr.Port != c.addr.Port || !addr.IP.Equal(c.addr.IP) || addr.Zone != c.addr.Zone {
 				fmt.Printf("packet from unexpected address (%s), discarding\n", addr.String())
@@ -236,11 +237,9 @@ func main() {
 	go c.Start()
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGHUP, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
-	fmt.Printf("waiting for signal\n")
 Loop:
 	for {
 		sig := <-sc
-		fmt.Printf("got signal %s\n", sig)
 		switch sig {
 		case syscall.SIGHUP:
 			break Loop

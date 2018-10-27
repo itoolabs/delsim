@@ -7,4 +7,5 @@ require (
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/zaf/g711 v0.0.0-20170102005359-c92d33efff1b
+	golang.org/x/sys v0.0.0-20181026144532-2772b66316d2 // indirect
 )
